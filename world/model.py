@@ -11,9 +11,9 @@ from world.utils import shifted_datetime
 from ephem import Observer
 from environment import Sky
 # from sky import SkyModel
-# from compoundeye import AntEye
+from compoundeye import AntEye
 from .geometry import PolygonList, Polygon, Route
-# from sphere import vec2sph
+from sphere import vec2sph
 
 cmap = cm.get_cmap('brg')
 
@@ -32,7 +32,7 @@ class World(object):
     """
 
     def __init__(self, observer=None, polygons=None, width=WIDTH, length=LENGTH, height=HEIGHT,
-                 uniform_sky=False, enable_pol_filters=True, day_shift=153, daylight_only=True):
+                 uniform_sky=True, enable_pol_filters=True, day_shift=153, daylight_only=True):
         """
         Creates a world.
 
@@ -225,16 +225,18 @@ class World(object):
             #                        noise_factor=.1,
             #                        activate_dop_sensitivity=True)
             self.eye = AntEye(ommatidia)
-            self.eye.activate_pol_filters(self.__pol_filters)
+            #self.eye.activate_pol_filters(self.__pol_filters)
             self.eye.sky = self.sky
             if update_sky:
-                self.sky.obs.date = self.datetime_now()
-                self.sky.generate()
-            self.eye.rotate(yaw=-r)
+                #New version of sky doesn't have obs apparently
+                #self.sky.obs.date = self.datetime_now()
+                self.sky()
+            #no rotation for the new eyes either
+            #self.eye.rotate(yaw=-r)
 
             pix = image.load()
-            for i, c in enumerate(self.eye.L):
-                pix[i // horizon, i % horizon] = tuple(np.int32(255 * c))
+            #for i, c in enumerate(self.eye.L):
+            #    pix[i // horizon, i % horizon] = tuple(np.int32(255 * c))
 
         # rotation matrix of the POV orientation
         R = np.array([
