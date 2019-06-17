@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '../../insectvision')
 import numpy as np
 from copy import copy
 from numbers import Number
@@ -28,7 +30,7 @@ class PolygonList(list):
             super(PolygonList, self).__init__()
 
         if ext > 0:
-            print "Warning: %d elements extracted from the list because of wrong type." % ext
+            print ("Warning: %d elements extracted from the list because of wrong type." % ext)
 
     @property
     def x(self):
@@ -640,4 +642,3 @@ if __name__ == "__main__":
     plt.legend()
 
     plt.show()
-

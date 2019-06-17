@@ -45,7 +45,7 @@ eps = np.finfo(float).eps
 #                 self._odours.append(odour)
 #             self[genotype]['loc'] = self.__name2location(meta[genotype]['name'])
 #
-#             # print meta[genotype]['type'], meta[genotype]['name'], self[genotype]['loc']
+#             # print (meta[genotype]['type'], meta[genotype]['name'], self[genotype]['loc'])
 #
 #     def __name2location(self, name):
 #         """
@@ -460,7 +460,7 @@ class DataFrame(pd.DataFrame):
             genotype, odour, trial = details[0]
             trial = int(trial)
 
-            # print genotype, odour, trial
+            # print (genotype, odour, trial)
 
             timepoint = None
             filename = os.path.join(__data_dir__, filename)
@@ -493,7 +493,7 @@ def plot_data(save=False, show=True):
     genotypes = []
 
     for name in names:
-        print name
+        print (name)
         genotype, odour = re.findall(r'([\d\w\W]+)-([\w\W]+)', name)[0]
 
         fig = plt.figure("%s" % genotype, figsize=(18, 6))
@@ -618,7 +618,7 @@ if __name__ == "__main__":
     # data_dict = sort(FruitflyData.dataset(FruitflyData()), ['type', 'name'])
     #
     # F = np.load("f-score-norm.npz")["F"]
-    # print F.max(), F.min()
+    # print (F.max(), F.min())
     #
     # v = 1e+2
     # plot_matrix(F, title="fly-f-score-norm",
@@ -627,7 +627,7 @@ if __name__ == "__main__":
 
     df = DataFrame()
     dff = df.unstacked
-    # print dff
+    # print (dff)
     # plot_traces(dff.sort_index(axis=0, level=['type', 'name']), diff=False, normalise=True)
     # plot_overall_response(dff.sort_index(axis=0, level=['type', 'name']), diff=False, normalise=True)
 

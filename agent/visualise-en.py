@@ -17,7 +17,7 @@ sky_type = "live-no-pol"
 test_no = 2
 
 nb_tests = len(tests[sky_type])
-print "Number of tests:", nb_tests
+print ("Number of tests:", nb_tests)
 
 date = tests[sky_type][test_no-1]["date"]
 time = tests[sky_type][test_no-1]["time"]

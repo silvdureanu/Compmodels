@@ -1,7 +1,7 @@
 import os
 from scipy.io import loadmat
-from model import *
-from geometry import PolygonList, Polygon, Route
+from .model import *
+from .geometry import PolygonList, Polygon, Route
 
 __dir__ = os.path.dirname(os.path.realpath(__file__))
 __data__ = __dir__ + "/../data/"

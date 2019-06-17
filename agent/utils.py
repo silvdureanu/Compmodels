@@ -143,8 +143,8 @@ def update_tests(sky_type, date, step, gfov=-np.pi/2, sfov=np.pi/2, bin=False):
             with open(__binpath__, 'wb') as f:
                 yaml.safe_dump(bin_tests, f, default_flow_style=False, allow_unicode=False)
             return True
-        except Exception, e:
-            print e.message
+        except Exception as e:
+            print (e.message)
             return False
     elif np.abs(gfov) < np.pi / 2 or np.abs(sfov) < np.pi / 2:
 
@@ -164,8 +164,8 @@ def update_tests(sky_type, date, step, gfov=-np.pi/2, sfov=np.pi/2, bin=False):
             with open(__fovpath__, 'wb') as f:
                 yaml.safe_dump(fov_tests, f, default_flow_style=False, allow_unicode=False)
             return True
-        except Exception, e:
-            print e.message
+        except Exception as e:
+            print (e.message)
             return False
     else:
         if sky_type not in tests.keys():
@@ -182,8 +182,8 @@ def update_tests(sky_type, date, step, gfov=-np.pi/2, sfov=np.pi/2, bin=False):
             with open(__logpath__, 'wb') as f:
                 yaml.safe_dump(tests, f, default_flow_style=False, allow_unicode=False)
             return True
-        except Exception, e:
-            print e.message
+        except Exception as e:
+            print (e.message)
             return False
 
 
@@ -196,37 +196,37 @@ def delete_test(sky_type, j, fov=False, bin=False):
 
     files = [enname, hroute, imname]
 
-    print "Are you sure you want to delete '%s'? ([Y]/n)" % name
+    print ("Are you sure you want to delete '%s'? ([Y]/n)" % name)
     s = raw_input()
 
     if s in ["Y", "y", ""]:
         for f in files:
             try:
                 os.remove(f)
-                print "'%s' successfully deleted." % f
+                print ("'%s' successfully deleted." % f)
             except OSError as e:
-                print e.message
+                print (e.message)
 
         if bin:
             bin_tests[sky_type].remove(bin_tests[sky_type][id])
             with open(__binpath__, 'wb') as f:
                 yaml.safe_dump(bin_tests, f, default_flow_style=False, allow_unicode=False)
-                print "Binary tests log updated successfully."
+                print ("Binary tests log updated successfully.")
         elif fov:
             fov_tests[sky_type].remove(fov_tests[sky_type][id])
             with open(__fovpath__, 'wb') as f:
                 yaml.safe_dump(fov_tests, f, default_flow_style=False, allow_unicode=False)
-                print "FOV tests log updated successfully."
+                print ("FOV tests log updated successfully.")
         else:
             tests[sky_type].remove(tests[sky_type][id])
             with open(__logpath__, 'wb') as f:
                 yaml.safe_dump(tests, f, default_flow_style=False, allow_unicode=False)
-                print "Tests log updated successfully."
+                print ("Tests log updated successfully.")
 
         return True
 
     else:
-        print "Canceled."
+        print ("Canceled.")
 
         return False
 
@@ -238,4 +238,3 @@ if __name__ == "__main__":
     bin = True
 
     delete_test(sky_type, id, fov=fov, bin=True)
-

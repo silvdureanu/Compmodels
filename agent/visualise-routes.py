@@ -11,7 +11,7 @@ fov = True
 bin = True
 
 if 'sky_type' in locals():
-    print sky_type
+    print (sky_type)
     w = load_world()
     r = load_route("learned")
     r.agent_no = 1
@@ -46,13 +46,13 @@ else:
     sky_types = ["uniform", "fixed", "fixed-no-pol", "live", "live-no-pol",
                  "uniform-rgb", "fixed-rgb", "fixed-no-pol-rgb", "live-rgb", "live-no-pol-rgb"]
     for i, sky_type in enumerate(sky_types):
-        print i, sky_type,
+        print (i, sky_type,)
         w = load_world()
         try:
             name = get_agent_name(sky_type, 0, fov=fov, bin=bin)
-            print ""
-        except AttributeError, e:
-            print "aboard"
+            print ("")
+        except AttributeError as e:
+            print ("aboard")
             continue
         r = load_route("learned")
         r.agent_no = 1

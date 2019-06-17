@@ -1,6 +1,6 @@
 import numpy as np
 from world import World, Route, Hybrid
-from utils import *
+from .utils import *
 
 
 class Agent(object):

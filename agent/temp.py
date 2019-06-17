@@ -46,9 +46,9 @@ class CXAgent(Agent):
         self.bump_shift = 0.
         try:
             self.compass.load_weights()
-        except Exception, e:
-            print "No parameters found for compass."
-            print e.message
+        except Exception as e:
+            print ("No parameters found for compass.")
+            print (e.message)
 
         if 'name' in kwargs.keys() and kwargs['name'] is None:
             self.name = "cx_agent_%02d" % self.id
@@ -88,7 +88,7 @@ class CXAgent(Agent):
             # TODO: warn about not setting the homing route
             return None
 
-        print "Resetting..."
+        print ("Resetting...")
         self.reset()
 
         # initialise visualisation
@@ -143,11 +143,11 @@ class CXAgent(Agent):
 
             # make a forward pass from the network
             motor = self._net(sun, flow)
-            # print "D_phi: % 2.2f" % np.rad2deg(d_phi),
-            # print "MTR: % 2.2f" % np.rad2deg(motor),
+            # print ("D_phi: % 2.2f" % np.rad2deg(d_phi)),
+            # print ("MTR: % 2.2f" % np.rad2deg(motor)),
             if isinstance(sun, np.ndarray) and sun.size == 8:
                 sun = decode_sun(sun)[0]
-            # print "lon: % 2.2f" % np.rad2deg(sun)
+            # print ("lon: % 2.2f" % np.rad2deg(sun))
             self.hist["tb1"].append(self._net.tb1)
             self.hist["cpu4"].append(self._net.cpu4_mem)
             self.hist["flow0"].append(flow)
@@ -195,7 +195,7 @@ class CXAgent(Agent):
             return None
 
         if reset:
-            print "Resetting..."
+            print ("Resetting...")
             super(CXAgent, self).reset()
 
         # initialise the visualisation
@@ -232,10 +232,10 @@ class CXAgent(Agent):
             # make a forward pass from the network
             motor = self._net(sun, flow)
             # motor = self._net(__phi_z + np.sign(d_phi) * self.bump_shift, flow)
-            # print "D_phi: % 2.2f" % np.rad2deg(motor),
+            # print ("D_phi: % 2.2f" % np.rad2deg(motor)),
             if isinstance(sun, np.ndarray) and sun.size == 8:
                 sun = decode_sun(sun)[0]
-            # print "lon: % 2.2f" % np.rad2deg(sun)
+            # print ("lon: % 2.2f" % np.rad2deg(sun))
             self.hist["tb1"].append(self._net.tb1)
             self.hist["cpu4"].append(self._net.cpu4_mem)
             self.hist["flow0"].append(flow)
@@ -350,7 +350,7 @@ if __name__ == "__main__":
         tau_phi = np.pi    # 180 deg
         condition = Hybrid(tau_x=step, tau_phi=tau_phi)
         agent_name = create_agent_name(date, sky_type, step, fov[0], fov[1])
-        print agent_name
+        print (agent_name)
 
         world = load_world()
         world.enable_pol_filters(enable_pol)
@@ -367,17 +367,17 @@ if __name__ == "__main__":
                         rgb=rgb, fov=fov, name=agent_name)
         agent.id = i + 1
         agent.set_world(world)
-        print agent.homing_routes[0]
+        print (agent.homing_routes[0])
 
         if agent.visualiser is not None:
             agent.visualiser.set_mode("panorama")
         route = agent.start_learning_walk()
-        print "Learned route:", route
+        print ("Learned route:", route)
 
         if agent.visualiser is not None:
             agent.visualiser.set_mode("top")
         route = agent.start_homing(reset=False)
-        print "Homing route: ", route
+        print ("Homing route: ", route)
         # if route is not None:
         #     save_route(route, agent_name)
 
@@ -513,4 +513,3 @@ if __name__ == "__main__":
             plt.colorbar(cax=cax, ax=ax, orientation="horizontal")
 
             plt.show()
-

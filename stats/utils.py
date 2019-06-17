@@ -51,9 +51,9 @@ if __name__ == "__main__":
         for id in xrange(nb_trials):
             try:
                 name = get_agent_name(sky, id, fov=fov, bin=bin)
-                print ""
-            except AttributeError, e:
-                print "aboard"
+                print ("")
+            except AttributeError as e:
+                print ("aboard")
                 continue
 
             r = load_route("%s" % name)

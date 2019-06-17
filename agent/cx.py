@@ -1,10 +1,10 @@
 import numpy as np
-from base import Agent, Logger
+from .base import Agent, Logger
 from world import Hybrid, Route, route_like
 from net import CX
-from compoundeye import CompassSensor, decode_sun
+from compoundeye.sensor import CompassSensor, decode_sun
 from datetime import datetime
-from utils import datestr
+from .utils import datestr
 from opticflow import get_flow as get_sph_flow
 
 
@@ -49,9 +49,9 @@ class CXAgent(Agent):
 
         try:
             self.compass.load_weights()
-        except Exception, e:
-            print "No parameters found for compass."
-            print e.message
+        except Exception as e:
+            print ("No parameters found for compass.")
+            print (e.message)
 
         if 'name' in kwargs.keys() and kwargs['name'] is None:
             self.name = "cx_agent_%02d" % self.id
@@ -84,7 +84,7 @@ class CXAgent(Agent):
             # TODO: warn about not setting the homing route
             return None
 
-        print "Resetting..."
+        print ("Resetting...")
         self.reset()
         self.log.stage = "training"
 
@@ -124,7 +124,7 @@ class CXAgent(Agent):
             return None
 
         if reset:
-            print "Resetting..."
+            print ("Resetting...")
             super(CXAgent, self).reset()
         self.log.stage = "homing"
 
@@ -329,7 +329,7 @@ if __name__ == "__main__":
         tau_phi = np.pi    # 180 deg
         condition = Hybrid(tau_x=step, tau_phi=tau_phi)
         agent_name = create_agent_name(date, sky_type, step, fov[0], fov[1])
-        print agent_name
+        print (agent_name)
 
         world = load_world()
         world.enable_pol_filters(enable_pol)
@@ -350,18 +350,18 @@ if __name__ == "__main__":
         observer = get_seville_observer()
         observer.date = date
         agent.sky.obs = observer
-        print agent.homing_routes[0]
+        print (agent.homing_routes[0])
 
         if agent.visualiser is not None:
             # agent.visualiser.set_mode("top")
             agent.visualiser.set_mode("panorama")
         route1 = agent.start_learning_walk()
-        print "Learned route:", route1
+        print ("Learned route:", route1)
 
         if agent.visualiser is not None:
             agent.visualiser.set_mode("top")
         route2 = agent.start_homing(reset=False)
-        print "Homing route: ", route2
+        print ("Homing route: ", route2)
         # if route2 is not None:
         #     save_route(route2, agent_name)
 
@@ -496,4 +496,3 @@ if __name__ == "__main__":
             plt.colorbar(cax=cax, ax=ax, orientation="horizontal")
 
             plt.show()
-

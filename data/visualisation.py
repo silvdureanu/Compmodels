@@ -12,7 +12,7 @@ eps = np.finfo(float).eps
 
 def plot_matrix(M, title="", labels1=None, labels2=None, vmin=-1., vmax=1., verbose=False):
     if verbose:
-        print "M_max: %.2f, M_min: %.2f" % (M.max(), M.min())
+        print ("M_max: %.2f, M_min: %.2f" % (M.max(), M.min()))
     plt.figure(title, figsize=(10.7, 10))
     ax1 = plt.gca()
     if labels2 is not None:
@@ -358,12 +358,12 @@ def plot_mutual_information(df, diff=False):
         MI = np.load("mi%s.npz" % ("-diff" if diff else ""))['MI']
     except IOError:
         for i, x in enumerate(xs.T.values):
-            print i,
+            print (i,)
             for j, y in enumerate(xs.T.values):
                 m = mutual_info_regression(x[..., np.newaxis], y)[0]
-                print "%.2f" % m,
+                print ("%.2f" % m,)
                 MI[i, j] = m
-            print ''
+            print ('')
         np.savez_compressed("mi%s.npz" % ("-diff" if diff else ""), MI=MI)
 
     MI = pd.DataFrame(MI, index=names, columns=types)
@@ -394,12 +394,12 @@ def plot_f_score(df, diff=False):
         F = np.load("f-score%s.npz" % ("-diff" if diff else ""))['F']
     except IOError:
         for i, x in enumerate(xs.T.values):
-            print i,
+            print (i,)
             for j, y in enumerate(xs.T.values):
                 f = f_regression(x[..., np.newaxis], y)[0]
-                print "%.2f" % f,
+                print ("%.2f" % f,)
                 F[i, j] = f
-            print ''
+            print ('')
         np.savez_compressed("f-score%s.npz" % ("-diff" if diff else ""), F=F)
 
     F = pd.DataFrame(F, index=names, columns=types)
@@ -601,12 +601,12 @@ def plot_iter_corr_matrix(df, sort_by=None, ascending=None, diff=False, shock=Tr
     plt.xticks(range(17), ["%d %s" % (trial, condition) for trial, condition in zip(trials, conditions)],
                rotation="vertical")
 
-    print corr
+    print (corr)
 
 
 def plot_traces(df, title="traces", vmin=-20, vmax=20, normalise=False, avg=False, diff=False, verbose=False):
     if verbose:
-        print "M_max: %.2f, M_min: %.2f" % (df.max(), df.min())
+        print ("M_max: %.2f, M_min: %.2f" % (df.max(), df.min()))
 
     # set the ticks of the left (1) axis to the names of the neurons
     labels1 = df.index.levels[1][df.index.codes[1]].values.astype('unicode')
@@ -760,7 +760,7 @@ def plot_traces_over_time(df, group=None, normalise=False, shock=True, diff=Fals
     if diff:
         par += "change"
 
-    print m_count, par
+    print (m_count, par)
     plt.plot(np.arange(0, 9), dff_csm,
              "C%d--" % m_count, lw=2, label="CS- (%s)" % par if par is not None else "CS-")
     plt.plot(np.arange(0, 8) + .5, dff_csp,
@@ -783,7 +783,7 @@ def plot_traces_over_time(df, group=None, normalise=False, shock=True, diff=Fals
 
 def plot_overall_response(df, title="traces", vmin=-20, vmax=20, normalise=False, diff=False, verbose=False):
     if verbose:
-        print "M_max: %.2f, M_min: %.2f" % (df.max(), df.min())
+        print ("M_max: %.2f, M_min: %.2f" % (df.max(), df.min()))
 
     plt.figure(title, figsize=(20, 10))
 

@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '../../insectvision')
 import numpy as np
 import numpy.linalg as la
 import ephem
@@ -5,11 +7,12 @@ import ephem
 from matplotlib import cm
 from datetime import timedelta, datetime
 from PIL import ImageDraw, Image
-from utils import shifted_datetime
+from world.utils import shifted_datetime
 from ephem import Observer
+from environment import Sky
 # from sky import SkyModel
 # from compoundeye import AntEye
-from geometry import PolygonList, Polygon, Route
+from .geometry import PolygonList, Polygon, Route
 # from sphere import vec2sph
 
 cmap = cm.get_cmap('brg')
@@ -66,8 +69,8 @@ class World(object):
         observer.date = self.datetime_now(init=True)
 
         # create and generate a sky instance
-        self.sky = SkyModel(observer=observer)
-        self.sky.generate()
+        self.sky = Sky.from_observer(obs=observer)
+        self.sky()
 
         # create a compound eye model for the sky pixels
         self.eye = None  # type: CompoundEye

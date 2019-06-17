@@ -2,11 +2,11 @@ import numpy as np
 from PIL import Image
 from world import Route, route_like, Hybrid, save_route
 from world.data_manager import __data__
-from net import MB
-from base import Agent, Logger
-from visualiser import Visualiser
+from net import WillshawNet
+from .base import Agent, Logger
+from .visualiser import Visualiser
 from world.utils import shifted_datetime
-from utils import *
+from .utils import *
 
 
 class MBAgent(Agent):
@@ -37,7 +37,7 @@ class MBAgent(Agent):
 
         super(MBAgent, self).__init__(*args, **kwargs)
 
-        self._net = MB(nb_channels=3 if self.rgb else 1)  # learning_rate=1)
+        self._net = WillshawNet(nb_channels=3 if self.rgb else 1)  # learning_rate=1)
         self.log = MBLogger()
 
         if 'name' in kwargs.keys() and kwargs['name'] is None:
@@ -66,7 +66,7 @@ class MBAgent(Agent):
             yield None
             return
 
-        print "Resetting..."
+        print ("Resetting...")
         self.reset()
 
         # let the network update its parameters (learn)
@@ -109,7 +109,7 @@ class MBAgent(Agent):
             return None
 
         if reset:
-            print "Resetting..."
+            print ("Resetting...")
             self.reset()
             self.log.reset()
             self.log.stage = "homing"
@@ -229,7 +229,7 @@ class MBAgent(Agent):
         :return:
         """
         # TODO: make this parametriseable for different pre-processing of the input
-        # print np.array(image).max()
+        # print (np.array(image).max())
         if self.rgb:
             return np.array(image).flatten()
         else:  # keep only green channel
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         tau_phi = np.pi    # 60 deg
         condition = Hybrid(tau_x=step, tau_phi=tau_phi)
         agent_name = create_agent_name(date, sky_type, step, fov[0], fov[1])
-        print agent_name
+        print (agent_name)
 
         world = load_world()
         world.enable_pol_filters(enable_pol)
@@ -298,15 +298,15 @@ if __name__ == "__main__":
         agent = MBAgent(condition=condition, live_sky=update_sky, visualiser=Visualiser(), rgb=rgb,
                         fov=fov, name=agent_name)
         agent.set_world(world)
-        print agent.homing_routes[0]
+        print (agent.homing_routes[0])
 
         agent.visualiser.set_mode("panorama")
         for route in agent.start_learning_walk():
-            print "Learned route:", route
+            print ("Learned route:", route)
 
         agent.visualiser.set_mode("top")
         route = agent.start_homing()
-        print route
+        print (route)
         if route is not None:
             save_route(route, agent_name)
 
