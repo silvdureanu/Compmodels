@@ -1,12 +1,17 @@
+import sys
+sys.path.insert(0, '..')
+sys.path.insert(0, '../..')
+print(sys.path)
+from world import Route, route_like, Hybrid, save_route
 import numpy as np
 from PIL import Image
-from world import Route, route_like, Hybrid, save_route
+
 from world.data_manager import __data__
-from net import WillshawNet
-from .base import Agent, Logger
-from .visualiser import Visualiser
+from insectvision.net import *
+from agent.base import Agent, Logger
+from agent.visualiser import Visualiser
 from world.utils import shifted_datetime
-from .utils import *
+from agent.utils import *
 
 
 class MBAgent(Agent):

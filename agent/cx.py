@@ -1,7 +1,7 @@
 import numpy as np
 from .base import Agent, Logger
 from world import Hybrid, Route, route_like
-from net import CX
+from net import *
 from compoundeye.sensor import CompassSensor, decode_sun
 from datetime import datetime
 from .utils import datestr

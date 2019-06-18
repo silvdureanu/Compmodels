@@ -1,6 +1,6 @@
 import numpy as np
 from world import World, Route, Hybrid
-from .utils import *
+from agent.utils import *
 
 
 class Agent(object):
@@ -264,7 +264,7 @@ class Logger(object):
         self.phi = np.append(self.phi, rot)
 
     def update_hist(self, *args, **kwargs):
-        for i, key in enumerate(self.hist.keys()[:len(args)]):
+        for i, key in enumerate(list(self.hist.keys())[:len(args)]):
             self.hist[key].append(args[i])
 
         for key in kwargs.keys():

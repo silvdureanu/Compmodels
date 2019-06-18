@@ -91,7 +91,8 @@ class World(object):
 
     @property
     def date(self):
-        return self.sky.obs.date.datetime()  # type: datetime
+        #Again, no obs in new Sky
+        return self.datetime_now()  # type: datetime
 
     def enable_pol_filters(self, value):
         """
