@@ -11,7 +11,7 @@ class Visualiser(object):
         self.sidebar_width = sidebar_width
         self.sidebar_pad = sidebar_pad
         self.thumb_width = sidebar_width
-        self.thumb_height = sidebar_width / 2
+        self.thumb_height = sidebar_width // 2
         self.screen = None
         self.__done = True
         self.__mode = mode

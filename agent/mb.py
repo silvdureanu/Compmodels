@@ -177,8 +177,11 @@ class MBAgent(Agent):
             ens = np.array(ens).flatten()
             # show preference to the least turning angle
             ens += np.append(np.linspace(.01, 0., 30, endpoint=False), np.linspace(0., .01, 31))
+            print("ENS:")
+            print(ens)
             en = ens.min()
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
+            print(d_phi)
         else:
             en = self._net(pn)
             d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
@@ -195,11 +198,12 @@ class MBAgent(Agent):
 
         # update view
         img_func = None
-        if self.visualiser.mode == "top":
-            img_func = self.world.draw_top_view
-        elif self.visualiser.mode == "panorama":
-            img_func = self.world_snapshot
+
         if self.visualiser is not None:
+            if self.visualiser.mode == "top":
+                img_func = self.world.draw_top_view
+            elif self.visualiser.mode == "panorama":
+                img_func = self.world_snapshot
             names = self.name.split('_')
             names[0] = self.world.date.strftime(datestr)
             names.append(counter)
@@ -305,6 +309,7 @@ if __name__ == "__main__":
         agent.set_world(world)
         print (agent.homing_routes[0])
 
+
         agent.visualiser.set_mode("panorama")
         for route in agent.start_learning_walk():
             print ("Learned route:", route)
@@ -318,6 +323,6 @@ if __name__ == "__main__":
         if not update_tests(sky_type, date, step, gfov=fov[0], sfov=fov[1], bin=bin):
             break
         agent.world.routes.append(route)
-        img, _ = agent.world.draw_top_view(1000, 1000)
+        img = agent.world.draw_top_view(1000, 1000)
         img.save(__data__ + "routes-img/%s.png" % agent_name, "PNG")
         # img.show(title="Testing route")

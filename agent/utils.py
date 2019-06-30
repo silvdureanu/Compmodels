@@ -140,11 +140,11 @@ def update_tests(sky_type, date, step, gfov=-np.pi/2, sfov=np.pi/2, bin=False):
 
         try:
             # save/update tests
-            with open(__binpath__, 'wb') as f:
+            with open(__binpath__, 'w') as f:
                 yaml.safe_dump(bin_tests, f, default_flow_style=False, allow_unicode=False)
             return True
         except Exception as e:
-            print (e.message)
+            print (str(e))
             return False
     elif np.abs(gfov) < np.pi / 2 or np.abs(sfov) < np.pi / 2:
 
@@ -165,7 +165,7 @@ def update_tests(sky_type, date, step, gfov=-np.pi/2, sfov=np.pi/2, bin=False):
                 yaml.safe_dump(fov_tests, f, default_flow_style=False, allow_unicode=False)
             return True
         except Exception as e:
-            print (e.message)
+            print (str(e))
             return False
     else:
         if sky_type not in tests.keys():
@@ -183,7 +183,7 @@ def update_tests(sky_type, date, step, gfov=-np.pi/2, sfov=np.pi/2, bin=False):
                 yaml.safe_dump(tests, f, default_flow_style=False, allow_unicode=False)
             return True
         except Exception as e:
-            print (e.message)
+            print (str(e))
             return False
 
 
@@ -205,7 +205,7 @@ def delete_test(sky_type, j, fov=False, bin=False):
                 os.remove(f)
                 print ("'%s' successfully deleted." % f)
             except OSError as e:
-                print (e.message)
+                print (str(e))
 
         if bin:
             bin_tests[sky_type].remove(bin_tests[sky_type][id])

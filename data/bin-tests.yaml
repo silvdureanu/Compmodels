@@ -55,6 +55,16 @@ fixed-no-pol:
   sfov: 90
   step: 10
   time: 14-12
+- date: '2019-01-24'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 12-07
+- date: '2019-01-26'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 14-17
 fixed-no-pol-rgb:
 - date: '2017-06-11'
   gfov: 29
@@ -81,6 +91,16 @@ fixed-no-pol-rgb:
   sfov: 90
   step: 10
   time: 12-08
+- date: '2019-01-24'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 16-29
+- date: '2019-01-26'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 14-18
 fixed-rgb:
 - date: '2017-06-11'
   gfov: 29
@@ -112,6 +132,31 @@ fixed-rgb:
   sfov: 90
   step: 10
   time: 12-46
+- date: '2019-01-23'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 17-07
+- date: '2019-01-23'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 19-54
+- date: '2019-01-24'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 10-08
+- date: '2019-01-26'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 14-08
+- date: '2019-01-26'
+  gfov: 90
+  sfov: 90
+  step: 10
+  time: 14-19
 live:
 - date: '2017-06-10'
   gfov: 29
