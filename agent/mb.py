@@ -5,6 +5,7 @@ print(sys.path)
 from world import Route, route_like, Hybrid, save_route
 import numpy as np
 from PIL import Image
+from PIL import ImageOps
 
 from world.data_manager import __data__
 from insectvision.net import *
@@ -181,7 +182,6 @@ class MBAgent(Agent):
             print(ens)
             en = ens.min()
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
-            print(d_phi)
         else:
             en = self._net(pn)
             d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
@@ -239,10 +239,19 @@ class MBAgent(Agent):
         """
         # TODO: make this parametriseable for different pre-processing of the input
         # print (np.array(image).max())
+        image = ImageOps.invert(image)
+
+
         if self.rgb:
             return np.array(image).flatten()
         else:  # keep only green channel
-            return np.array(image).reshape((-1, 3))[:, 0].flatten()
+            image = image.convert("L")
+            arrayim = np.array(image)
+            #print(arrayim.shape)
+            #flatim = arrayim.reshape((-1, 3))[:, 0].flatten()
+            flatim = arrayim.flatten()
+            #print(flatim.shape)
+            return flatim
 
 
 class MBLogger(Logger):
@@ -273,9 +282,9 @@ if __name__ == "__main__":
         # (False, True, True, False, np.random.RandomState(2018)),  # uniform
         # (False, True, True, True, np.random.RandomState(2018)),  # uniform-rgb
         # (False, False, True, False, None),    # fixed
-        (False, False, True, True, None),     # fixed-rgb
-        (False, False, False, False, None),    # fixed-no-pol
-        (False, False, False, True, None),     # fixed-no-pol-rgb
+        (False, True, False, True, None),     # fixed-rgb
+        #(False, False, False, False, None),    # fixed-no-pol
+        #(False, False, False, True, None),     # fixed-no-pol-rgb
     ]
 
     bin = True
@@ -285,7 +294,8 @@ if __name__ == "__main__":
         if rng is None:
             rng = np.random.RandomState(2018)
         RND = rng
-        fov = (-np.pi/2, np.pi/2)
+        #vertical FOV of 76 degrees, as per Ardin2016
+        fov = (-np.pi/24, 0.378*np.pi)
         # fov = (-np.pi/6, np.pi/2)
         sky_type = "uniform" if uniform_sky else "live" if update_sky else "fixed"
         if not enable_pol and "uniform" not in sky_type:

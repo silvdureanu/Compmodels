@@ -1,6 +1,7 @@
 import numpy as np
 from world import World, Route, Hybrid
 from agent.utils import *
+from PIL import ImageOps
 
 
 class Agent(object):
@@ -153,7 +154,7 @@ class Agent(object):
         img = self.world.draw_panoramic_view(x, y, z, phi, update_sky=self.live_sky,
                                              include_ground=self.__per_ground, include_sky=self.__per_sky,
                                              width=width, length=width, height=height)
-        return img
+        return ImageOps.autocontrast(img)
 
     def update_state(self, heading, rotation=0):
         phi, v = self.translate(heading, rotation, self.dx)
@@ -162,6 +163,8 @@ class Agent(object):
         self.pos[:] += np.array([v[0], -v[1], 0.])
         self.yaw = np.pi - phi
         self.log.add(self.pos[:3], self.yaw)
+        print("Agent position:")
+        print(self.pos)
 
         return phi, v
 
