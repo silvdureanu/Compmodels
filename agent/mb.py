@@ -88,7 +88,7 @@ class MBAgent(Agent):
             self.log.stage = "training"
 
             # add a copy of the current route to the world to visualise the path
-            self.log.add(self.pos[:3], self.rot[1])
+            self.log.add(self.pos[:3], self.rot[0])
             self.world.routes.append(
                 route_like(r, self.log.x, self.log.y, self.log.z, self.log.phi,
                            self.condition, agent_no=self.id + 1, route_no=i + 1)
@@ -125,13 +125,13 @@ class MBAgent(Agent):
             self.visualiser.reset()
 
         # add a copy of the current route to the world to visualise the path
-        self.log.add(self.pos[:3], self.rot[1])
+        self.log.add(self.pos[:3], self.rot[0])
         self.world.routes.append(route_like(
             self.world.routes[0], self.log.x, self.log.y, self.log.z, self.log.phi,
             agent_no=self.id, route_no=1)
         )
 
-        phi = np.pi - self.rot[1]
+        phi = np.pi - self.rot[0]
         counter = 0
         start_time = datetime.now()
         while self.d_nest > 0.1:
@@ -149,7 +149,7 @@ class MBAgent(Agent):
             return False
 
         if heading is None:
-            heading = np.pi - self.rot[1]
+            heading = np.pi - self.rot[0]
         # generate the visual input and code it to the projecting neurons
         pn = self.img2pn(self.world_snapshot())
         # make a forward pass from the network (updating the parameters)
@@ -178,9 +178,10 @@ class MBAgent(Agent):
             ens = np.array(ens).flatten()
             # show preference to the least turning angle
             ens += np.append(np.linspace(.01, 0., 30, endpoint=False), np.linspace(0., .01, 31))
-            print("ENS:")
-            print(ens)
+            #print("ENS:")
+            #print(ens)
             en = ens.min()
+            #print(ens.argmin())
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
         else:
             en = self._net(pn)
