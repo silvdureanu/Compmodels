@@ -134,6 +134,8 @@ class World(object):
         if height is None:
             height = self.height
 
+        length = length - 350
+
         # create new image and drawer
         image = Image.new("RGB", (width, length), GROUND_COLOUR)
         draw = ImageDraw.Draw(image)
@@ -262,7 +264,7 @@ class World(object):
 
         # code spherical elevation to pixel height
         thetas = (height / Z) * ((((np.pi/2 - np.array(thetas)) % np.pi) / np.pi) - (1 - include_sky) / 2.)
-        phis = width * ((np.pi + np.array(phis)) % (2 * np.pi)) / (2 * np.pi)
+        phis = width * ((np.pi + np.array(phis)) % (2*np.pi)) / ( 2*np.pi)
         rhos = la.norm(np.array(rhos), axis=-1)
         ind = np.argsort(rhos)[::-1]
         for theta, phi, c in zip(thetas[ind], phis[ind], self.polygons.c_int32[ind]):

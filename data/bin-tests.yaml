@@ -313,3 +313,18 @@ uniform-rgb:
   sfov: 90
   step: 10
   time: 19-01
+- date: '2019-01-30'
+  gfov: 7
+  sfov: 68
+  step: 10
+  time: 12-12
+- date: '2019-01-30'
+  gfov: 7
+  sfov: 68
+  step: 10
+  time: 15-29
+- date: '2019-01-31'
+  gfov: 7
+  sfov: 68
+  step: 10
+  time: 09-04

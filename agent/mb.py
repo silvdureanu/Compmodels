@@ -183,6 +183,7 @@ class MBAgent(Agent):
             en = ens.min()
             #print(ens.argmin())
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
+
         else:
             en = self._net(pn)
             d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
@@ -246,11 +247,11 @@ class MBAgent(Agent):
         if self.rgb:
             return np.array(image).flatten()
         else:  # keep only green channel
-            image = image.convert("L")
+            #image = image.convert("L")
             arrayim = np.array(image)
             #print(arrayim.shape)
-            #flatim = arrayim.reshape((-1, 3))[:, 0].flatten()
-            flatim = arrayim.flatten()
+            flatim = arrayim.reshape((-1, 3))[:, 0].flatten()
+            #flatim = arrayim.flatten()
             #print(flatim.shape)
             return flatim
 
