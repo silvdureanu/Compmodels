@@ -14,6 +14,7 @@ from agent.visualiser import Visualiser
 from world.utils import shifted_datetime
 from agent.utils import *
 
+globph = 2
 
 class MBAgent(Agent):
     FOV = (-np.pi/6, 4*np.pi/9)
@@ -63,6 +64,7 @@ class MBAgent(Agent):
             return False
 
     def start_learning_walk(self):
+        global globph
         if self.world is None:
             # TODO: warn about not setting the world
             yield None
@@ -95,9 +97,11 @@ class MBAgent(Agent):
             )
             counter = 0         # count the steps
             phi_ = (np.array([np.pi - phi for _, _, _, phi in r]) + np.pi) % (2 * np.pi) - np.pi
+            globph = phi_
             # phi_ = np.roll(phi_, 1)  # type: np.ndarray
 
             for phi in phi_:
+                print(phi)
                 if not self.step(phi, counter):
                     break
                 counter += 1
@@ -144,6 +148,7 @@ class MBAgent(Agent):
                      condition=self.condition, agent_no=self.id, route_no=len(self.world.routes) + 1)
 
     def step(self, phi, counter=0., start_time=None, heading=None, compute_en=False):
+        global globph
         # stop the loop when we close the visualisation window
         if self.visualiser is not None and self.visualiser.is_quit():
             return False
@@ -179,14 +184,22 @@ class MBAgent(Agent):
             # show preference to the least turning angle
             ens += np.append(np.linspace(.01, 0., 30, endpoint=False), np.linspace(0., .01, 31))
             #print("ENS:")
-            #print(ens)
+            print(ens)
             en = ens.min()
             #print(ens.argmin())
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
+            print(d_phi)
+            #phi = globph[counter]
+            #d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
+            print(en)
 
         else:
-            en = self._net(pn)
+
+            #print(en)
+            #print(self._net(pn))
             d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
+            pn = self.img2pn(self.world_snapshot(d_phi = d_phi))
+            en = self._net(pn)
             # d_phi = 0
             ens = None
             snaps = None
@@ -241,7 +254,9 @@ class MBAgent(Agent):
         """
         # TODO: make this parametriseable for different pre-processing of the input
         # print (np.array(image).max())
+        image = ImageOps.autocontrast(image)
         image = ImageOps.invert(image)
+
 
 
         if self.rgb:
@@ -319,6 +334,7 @@ if __name__ == "__main__":
         agent = MBAgent(condition=condition, live_sky=update_sky, visualiser=Visualiser(), rgb=rgb,
                         fov=fov, name=agent_name)
         agent.set_world(world)
+        print("ROUTE")
         print (agent.homing_routes[0])
 
 

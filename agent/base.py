@@ -92,6 +92,7 @@ class Agent(object):
         self.roll[2] = value
 
     def reset(self):
+        global globph
         """
         Resets the agent at the feeder
         :return: a boolean notifying whether the update of the position and orientation is done or not
@@ -102,7 +103,9 @@ class Agent(object):
 
         if len(self.homing_routes) > 0:
             self.pos[:2] = self.feeder.copy()
+            #phi_ = np.pi-((np.array([np.pi - phi for _, _, _, phi in self.homing_routes[0]]) + np.pi) % (2 * np.pi) - np.pi)
             self.yaw = self.homing_routes[0].phi[0]
+            #self.yaw = phi_[0]
             return True
         else:
             # TODO: warn about the existence of the route
@@ -154,7 +157,8 @@ class Agent(object):
         img = self.world.draw_panoramic_view(x, y, z, phi, update_sky=self.live_sky,
                                              include_ground=self.__per_ground, include_sky=self.__per_sky,
                                              width=width, length=width, height=height)
-        return ImageOps.autocontrast(img)
+        #return ImageOps.autocontrast(img)
+        return img
 
     def update_state(self, heading, rotation=0):
         phi, v = self.translate(heading, rotation, self.dx)
