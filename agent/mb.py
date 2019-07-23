@@ -254,19 +254,21 @@ class MBAgent(Agent):
         """
         # TODO: make this parametriseable for different pre-processing of the input
         # print (np.array(image).max())
-        image = ImageOps.autocontrast(image)
-        image = ImageOps.invert(image)
+        #image = ImageOps.autocontrast(image)
+        #image = ImageOps.invert(image)
 
 
 
         if self.rgb:
             return np.array(image).flatten()
         else:  # keep only green channel
-            #image = image.convert("L")
+            image = image.convert("L")
+            image = ImageOps.autocontrast(image)
+            image = ImageOps.invert(image)
             arrayim = np.array(image)
             #print(arrayim.shape)
-            flatim = arrayim.reshape((-1, 3))[:, 0].flatten()
-            #flatim = arrayim.flatten()
+            #flatim = arrayim.reshape((-1, 3))[:, 2].flatten()
+            flatim = arrayim.flatten()
             #print(flatim.shape)
             return flatim
 
@@ -299,7 +301,7 @@ if __name__ == "__main__":
         # (False, True, True, False, np.random.RandomState(2018)),  # uniform
         # (False, True, True, True, np.random.RandomState(2018)),  # uniform-rgb
         # (False, False, True, False, None),    # fixed
-        (False, True, False, True, None),     # fixed-rgb
+        (False, True, False, False, None),     # fixed-rgb
         #(False, False, False, False, None),    # fixed-no-pol
         #(False, False, False, True, None),     # fixed-no-pol-rgb
     ]
@@ -312,7 +314,7 @@ if __name__ == "__main__":
             rng = np.random.RandomState(2018)
         RND = rng
         #vertical FOV of 76 degrees, as per Ardin2016
-        fov = (-np.pi/24, 0.378*np.pi)
+        fov = (0.01, np.pi/2.38)
         # fov = (-np.pi/6, np.pi/2)
         sky_type = "uniform" if uniform_sky else "live" if update_sky else "fixed"
         if not enable_pol and "uniform" not in sky_type:
