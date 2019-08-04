@@ -77,8 +77,13 @@ class MBAgent(Agent):
         print ("Resetting...")
         self.reset()
 
+        #Prepare to learn first layer weights
+        self._net.update = False
+
+
         # let the network update its parameters (learn)
-        self._net.update = True
+        self._net.update = False
+        self._net.adapt = True
 
         # initialise visualisation
         if self.visualiser is not None:
@@ -101,12 +106,21 @@ class MBAgent(Agent):
             # phi_ = np.roll(phi_, 1)  # type: np.ndarray
 
             for phi in phi_:
-                print(phi)
                 if not self.step(phi, counter):
                     break
                 counter += 1
-
-            # remove the copy of the route from the world
+            #
+            self.visualiser.reset()
+            self._net.update = True
+            self._net.adapt = False
+            self._net.mask_pn2kc_weights_pca()
+            self.reset()
+            counter = 0
+            for phi in phi_:
+                if not self.step(phi, counter):
+                    break
+                counter += 1
+            #remove the copy of the route from the world
             self.world.routes.remove(r)
             yield r     # return the learned route
 
@@ -188,15 +202,11 @@ class MBAgent(Agent):
             en = ens.min()
             #print(ens.argmin())
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
-            print(d_phi)
             #phi = globph[counter]
             #d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
-            print(en)
 
         else:
 
-            #print(en)
-            #print(self._net(pn))
             d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
             pn = self.img2pn(self.world_snapshot(d_phi = d_phi))
             en = self._net(pn)
@@ -260,6 +270,8 @@ class MBAgent(Agent):
 
 
         if self.rgb:
+            image = ImageOps.autocontrast(image)
+            image = ImageOps.invert(image)
             return np.array(image).flatten()
         else:  # keep only green channel
             image = image.convert("L")
@@ -267,7 +279,7 @@ class MBAgent(Agent):
             image = ImageOps.invert(image)
             arrayim = np.array(image)
             #print(arrayim.shape)
-            #flatim = arrayim.reshape((-1, 3))[:, 2].flatten()
+            #flatim = arrayim.reshape((-1, 3))[:, 0].flatten()
             flatim = arrayim.flatten()
             #print(flatim.shape)
             return flatim
@@ -311,7 +323,7 @@ if __name__ == "__main__":
     for update_sky, uniform_sky, enable_pol, rgb, rng in exps:
         date = shifted_datetime()
         if rng is None:
-            rng = np.random.RandomState(2018)
+            rng = np.random.RandomState(2019)
         RND = rng
         #vertical FOV of 76 degrees, as per Ardin2016
         fov = (0.01, np.pi/2.38)
