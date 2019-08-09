@@ -91,6 +91,17 @@ class Agent(object):
     def roll(self, value):
         self.roll[2] = value
 
+    def set_random(self):
+        """
+        Sets the agent to a random position on the map
+        """
+
+        self.pos[0] = np.random.uniform(3,10)
+        self.pos[1] = np.random.uniform(3,10)
+        self.yaw = np.random.uniform(0,2*np.pi)
+        print("Agent position:")
+        print(self.pos)
+
     def reset(self):
         global globph
         """
@@ -171,6 +182,15 @@ class Agent(object):
         print(self.pos)
 
         return phi, v
+
+    def translate_sideways(self, heading, direction):
+        #Moves the agent sideways (orthogonal to its current orientation) by 2.5cm
+        if direction == 0:
+            rot = np.pi / 2
+        else:
+            rot = -np.pi/2
+        phi, v = self.translate(heading, rot, self.dx / 4)
+        self.pos[:] += np.array([v[0], -v[1], 0.])
 
     @staticmethod
     def translate(heading, rotation, acceleration):

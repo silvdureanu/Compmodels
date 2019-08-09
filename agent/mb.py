@@ -105,14 +105,20 @@ class MBAgent(Agent):
             globph = phi_
             # phi_ = np.roll(phi_, 1)  # type: np.ndarray
 
-            for phi in phi_:
-                if not self.step(phi, counter):
-                    break
-                counter += 1
-            #
+            self.ims = np.loadtxt('images1000.dat')
+            self.ims = np.reshape(self.ims,(1000,360))
+            print(self.ims.shape)
+
+            for j in range(3000):
+                print(j)
+                stepped = self.step(self.yaw, counter, rand_jump = True)
+
             self.visualiser.reset()
             self._net.update = True
             self._net.adapt = False
+            #np.savetxt('imageweights1000.dat', self._net.w_pn2kc)
+            #np.savetxt('images1000.dat', self._net.recorded_pns)
+            #self._net.w_pn2kc = np.loadtxt('imageweights1000.dat')
             self._net.mask_pn2kc_weights_pca()
             self.reset()
             counter = 0
@@ -161,7 +167,7 @@ class MBAgent(Agent):
         return Route(self.log.x, self.log.y, self.log.z, self.log.phi,
                      condition=self.condition, agent_no=self.id, route_no=len(self.world.routes) + 1)
 
-    def step(self, phi, counter=0., start_time=None, heading=None, compute_en=False):
+    def step(self, phi, counter=0., start_time=None, heading=None, compute_en=False, rand_jump = False):
         global globph
         # stop the loop when we close the visualisation window
         if self.visualiser is not None and self.visualiser.is_quit():
@@ -169,8 +175,13 @@ class MBAgent(Agent):
 
         if heading is None:
             heading = np.pi - self.rot[0]
-        # generate the visual input and code it to the projecting neurons
-        pn = self.img2pn(self.world_snapshot())
+
+        if rand_jump:
+            self.set_random()
+            pn = self.img2pn(self.world_snapshot())
+            #pn = self.ims[counter]
+            en = self._net(pn)
+            return
         # make a forward pass from the network (updating the parameters)
         if compute_en:
             ens, snaps = [], []
@@ -213,7 +224,9 @@ class MBAgent(Agent):
             # d_phi = 0
             ens = None
             snaps = None
-        nphi, v = self.update_state(heading, rotation=d_phi)
+
+        if not rand_jump:
+            nphi, v = self.update_state(heading, rotation=d_phi)
 
         self.log.update_hist(pn=self._net.pn, kc=self._net.kc, en=en, ens=ens, turn=d_phi, phi=phi)
 
@@ -250,7 +263,7 @@ class MBAgent(Agent):
             self.visualiser.update_main(img_func, en=ens, thumbs=snaps, caption=capt_format % tuple(names))
 
         d_max = 2 * np.sqrt(np.square(self.feeder - self.nest).sum())
-        if self.d_feeder > d_max and self.d_nest > d_max or counter > 20. / self.dx:
+        if not rand_jump and self.d_feeder > d_max and self.d_nest > d_max or counter > 20. / self.dx:
             return False
 
         return True
