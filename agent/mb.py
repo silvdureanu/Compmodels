@@ -109,7 +109,7 @@ class MBAgent(Agent):
             self.ims = np.reshape(self.ims,(1000,360))
             print(self.ims.shape)
 
-            for j in range(3000):
+            for j in range(200):
                 print(j)
                 stepped = self.step(self.yaw, counter, rand_jump = True)
 
