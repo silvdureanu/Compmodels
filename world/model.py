@@ -155,7 +155,7 @@ class World(object):
             r, g, b, _ = cmap(float(rt.agent_no) / float(len(self.routes)))
             draw.line(rt.xy, fill=(int(r * 255), int(g * 255), int(b * 255)))
 
-            r = 20.
+            r = 10.
             for x0, y0, _, phi in rt:
                 x1 = x0 + r * np.sin(phi)
                 y1 = y0 + r * np.cos(phi)

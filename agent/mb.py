@@ -82,8 +82,8 @@ class MBAgent(Agent):
 
 
         # let the network update its parameters (learn)
-        self._net.update = False
-        self._net.adapt = True
+        self._net.update = True
+        self._net.adapt = False
 
         # initialise visualisation
         if self.visualiser is not None:
@@ -102,22 +102,28 @@ class MBAgent(Agent):
             )
             counter = 0         # count the steps
             phi_ = (np.array([np.pi - phi for _, _, _, phi in r]) + np.pi) % (2 * np.pi) - np.pi
-            globph = phi_
+            for phi in phi_:
+                if not self.step(phi, counter):
+                    break
+                counter += 1
+            #globph = phi_
             # phi_ = np.roll(phi_, 1)  # type: np.ndarray
 
-            self.ims = np.loadtxt('images1000.dat')
-            self.ims = np.reshape(self.ims,(1000,360))
-            print(self.ims.shape)
+            #self.ims = np.loadtxt('images1000.dat')
+            #self.ims = np.reshape(self.ims,(1000,360))
+            #print(self.ims.shape)
+            #self.ims = np.array([])
 
-            for j in range(200):
+
+            '''for j in range(1000):
                 print(j)
-                stepped = self.step(self.yaw, counter, rand_jump = True)
+                stepped = self.step(self.yaw, counter, rand_jump = True)'''
 
-            self.visualiser.reset()
+            '''self.visualiser.reset()
             self._net.update = True
             self._net.adapt = False
             #np.savetxt('imageweights1000.dat', self._net.w_pn2kc)
-            #np.savetxt('images1000.dat', self._net.recorded_pns)
+            np.savez("rotating_im_x_and_y.npz",ims = self.ims)
             #self._net.w_pn2kc = np.loadtxt('imageweights1000.dat')
             self._net.mask_pn2kc_weights_pca()
             self.reset()
@@ -125,7 +131,7 @@ class MBAgent(Agent):
             for phi in phi_:
                 if not self.step(phi, counter):
                     break
-                counter += 1
+                counter += 1'''
             #remove the copy of the route from the world
             self.world.routes.remove(r)
             yield r     # return the learned route
@@ -179,8 +185,33 @@ class MBAgent(Agent):
         if rand_jump:
             self.set_random()
             pn = self.img2pn(self.world_snapshot())
+
+
+            if (len(self.ims) == 0):
+                self.ims = pn
+            else:
+                self.ims = np.vstack((self.ims,pn))
+
+            for ix in range(4):
+                self.rotate(heading,np.pi/20)
+                pn = self.img2pn(self.world_snapshot())
+                self.ims = np.vstack((self.ims,pn))
+
+
+
+            #self.translate_sideways(heading, np.random.randint(2))
+            # if (len(self.imsy) == 0):
+            #     self.imsy = pn2
+            # else:
+            #     self.imsy = np.vstack((self.imsy,pn2))
+            #
+            #
+            #
+            # self.imsx = np.vstack((self.imsx,pn2))
+            # self.imsy = np.vstack((self.imsy,pn1))
+
             #pn = self.ims[counter]
-            en = self._net(pn)
+            #en = self._net(pn)
             return
         # make a forward pass from the network (updating the parameters)
         if compute_en:
@@ -213,6 +244,13 @@ class MBAgent(Agent):
             en = ens.min()
             #print(ens.argmin())
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
+
+            '''fakephi = heading + d_phi
+            fakephi = (2*np.pi - fakephi)%(2*np.pi) + np.pi
+            d_phi = (fakephi - heading + np.pi) % (2*np.pi) - np.pi'''
+
+
+            print(d_phi)
             #phi = globph[counter]
             #d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
 

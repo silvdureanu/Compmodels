@@ -183,13 +183,17 @@ class Agent(object):
 
         return phi, v
 
+    def rotate(self,heading,rotation):
+        phi,v = self.translate(heading,rotation,0)
+        self.yaw = np.pi - phi
+
     def translate_sideways(self, heading, direction):
         #Moves the agent sideways (orthogonal to its current orientation) by 2.5cm
         if direction == 0:
             rot = np.pi / 2
         else:
             rot = -np.pi/2
-        phi, v = self.translate(heading, rot, self.dx / 4)
+        phi, v = self.translate(heading, rot, self.dx / 3)
         self.pos[:] += np.array([v[0], -v[1], 0.])
 
     @staticmethod
