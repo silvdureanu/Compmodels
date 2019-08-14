@@ -101,10 +101,13 @@ class MBAgent(Agent):
                            self.condition, agent_no=self.id + 1, route_no=i + 1)
             )
             counter = 0         # count the steps
-            phi_ = (np.array([np.pi - phi for _, _, _, phi in r]) + np.pi) % (2 * np.pi) - np.pi
+
+            phi_ =  (np.array([np.pi + phi for _, _, _, phi in r]) + np.pi) % (2 * np.pi)
             for phi in phi_:
                 if not self.step(phi, counter):
                     break
+                actual_route = route_like(r, self.log.x, self.log.y, self.log.z, self.log.phi,
+                           self.condition, agent_no=self.id + 1, route_no=i + 1)
                 counter += 1
             #globph = phi_
             # phi_ = np.roll(phi_, 1)  # type: np.ndarray
@@ -134,7 +137,7 @@ class MBAgent(Agent):
                 counter += 1'''
             #remove the copy of the route from the world
             self.world.routes.remove(r)
-            yield r     # return the learned route
+            yield actual_route     # return the learned route
 
         # freeze the parameters in the network
         self._net.update = False
@@ -161,7 +164,7 @@ class MBAgent(Agent):
             agent_no=self.id, route_no=1)
         )
 
-        phi = np.pi - self.rot[0]
+        phi = self.rot[0]
         counter = 0
         start_time = datetime.now()
         while self.d_nest > 0.1:
@@ -180,7 +183,8 @@ class MBAgent(Agent):
             return False
 
         if heading is None:
-            heading = np.pi - self.rot[0]
+            heading = self.rot[0]
+
 
         if rand_jump:
             self.set_random()
@@ -215,6 +219,7 @@ class MBAgent(Agent):
             return
         # make a forward pass from the network (updating the parameters)
         if compute_en:
+            #self.translate_sideways(heading,0)
             ens, snaps = [], []
             for d_phi in np.linspace(-np.pi / 3, np.pi / 3, 61):
                 if self.visualiser is not None and self.visualiser.is_quit():
@@ -243,6 +248,7 @@ class MBAgent(Agent):
             print(ens)
             en = ens.min()
             #print(ens.argmin())
+            print("DPHI")
             d_phi = np.deg2rad(2 * (ens.argmin() - 30))
 
             '''fakephi = heading + d_phi
@@ -256,7 +262,16 @@ class MBAgent(Agent):
 
         else:
 
-            d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
+            d_phi = np.maximum(phi,heading) - np.minimum(phi,heading)
+            if d_phi > np.pi:
+                d_phi = 2*np.pi - d_phi
+
+            diff = phi - heading
+
+            if not ((diff >=0 and diff <=np.pi) or (diff <= (-np.pi) and diff>=(-2*np.pi))):
+                d_phi = - d_phi
+
+            #d_phi = (phi - heading + np.pi) % (2 * np.pi) - np.pi
             pn = self.img2pn(self.world_snapshot(d_phi = d_phi))
             en = self._net(pn)
             # d_phi = 0
@@ -275,7 +290,7 @@ class MBAgent(Agent):
         # update view
         img_func = None
 
-        if self.visualiser is not None:
+        if True:
             if self.visualiser.mode == "top":
                 img_func = self.world.draw_top_view
             elif self.visualiser.mode == "panorama":
@@ -297,7 +312,6 @@ class MBAgent(Agent):
             capt_format = "%s " * (len(names) - n) + "| C: % 2d D_f: % 2.2f D_n: % 2.2f EN: % 2.1f"
             if start_time is not None:
                 capt_format += " | Elapsed time: %02d:%02d"
-
             self.visualiser.update_main(img_func, en=ens, thumbs=snaps, caption=capt_format % tuple(names))
 
         d_max = 2 * np.sqrt(np.square(self.feeder - self.nest).sum())
@@ -406,6 +420,7 @@ if __name__ == "__main__":
         agent.visualiser.set_mode("panorama")
         for route in agent.start_learning_walk():
             print ("Learned route:", route)
+            agent.learned_route = route
 
         agent.visualiser.set_mode("top")
         route = agent.start_homing()

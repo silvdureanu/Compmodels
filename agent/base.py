@@ -175,17 +175,17 @@ class Agent(object):
         phi, v = self.translate(heading, rotation, self.dx)
 
         # update the agent position
-        self.pos[:] += np.array([v[0], -v[1], 0.])
-        self.yaw = np.pi - phi
+        self.pos[:] += np.array([v[0], v[1], 0.])
+        self.yaw = phi
         self.log.add(self.pos[:3], self.yaw)
         print("Agent position:")
         print(self.pos)
 
         return phi, v
 
-    def rotate(self,heading,rotation):
+    '''def rotate(self,heading,rotation):
         phi,v = self.translate(heading,rotation,0)
-        self.yaw = np.pi - phi
+        self.yaw =phi'''
 
     def translate_sideways(self, heading, direction):
         #Moves the agent sideways (orthogonal to its current orientation) by 2.5cm
@@ -194,17 +194,17 @@ class Agent(object):
         else:
             rot = -np.pi/2
         phi, v = self.translate(heading, rot, self.dx / 3)
-        self.pos[:] += np.array([v[0], -v[1], 0.])
+        self.pos[:] += np.array([v[0], v[1], 0.])
 
     @staticmethod
     def translate(heading, rotation, acceleration):
         phi = Agent.rotate(heading, rotation)
-        v = Agent.get_velocity(phi, acceleration)
+        v = self.get_velocity(phi, acceleration)
         return phi, v
 
     @staticmethod
     def rotate(heading, rotation):
-        return ((heading + rotation + np.pi) % (2 * np.pi)) - np.pi
+        return ((heading + rotation) % (2 * np.pi))
 
     @staticmethod
     def get_velocity(phi, acceleration):
